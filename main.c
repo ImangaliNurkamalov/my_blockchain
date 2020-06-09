@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -34,18 +35,24 @@ void addNode(struct blockchain_Node *node, int nid_numb)
     struct blockchain_Node* current = node;
 
     //get last node
-    while(current->next) {
+    while(current != NULL && current->next != NULL){
         current = current->next;
     }
     //create node with given nid
     struct blockchain_Node* new_Node = createNode(nid_numb);
     // add new node to the list
-    current->next = new_Node;
+    if(current==NULL) {
+        current = new_Node;
+    } else {
+        current->next = new_Node;
+    }
+    
 }
 
 struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb)
 {
      struct blockchain_Node* current = node;
+     
      while(current) {
          if(nid_numb == current->nid) {
              return current;
@@ -57,13 +64,30 @@ struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_
 
 void deleteNode(struct blockchain_Node *node, int nid_numb)
 {
-    struct blockchain_Node* node_to_delete =  
+    struct blockchain_Node* current = node;
+    struct blockchain_Node* new = NULL;
+    while(current) {
+        if (nid_numb != current->nid) {
+            addNode(new, current->nid);
+        }
+    }
+    *node=*new;
 }
 
 int main(int argc, const char* argv[])
 {
- 
-
-
+  
+   struct blockchain_Node *first_node = NULL;
+   addNode(first_node, 12);
+   addNode(first_node, 13);
+   int i = 0; 
+   struct blockchain_Node *current = first_node;
+  while(current) {
+      printf("NODE[%d] : %d", i, first_node->nid);
+      i++;
+      current = current->next;
+      free(current);
+  }
+//   free(first_node);
     return 0;
 }
