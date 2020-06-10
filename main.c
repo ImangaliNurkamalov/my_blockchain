@@ -35,7 +35,7 @@ struct blockchain_Node* createNode(int nid_numb)
 
 void addNode(struct blockchain_Node *node, int nid_numb)
 {
-    printf("Hello from addNode!\n");
+    // printf("Hello from addNode!\n");
     struct blockchain_Node* current = node;
     //get last node
     while(current != NULL && current->next != NULL){
@@ -50,7 +50,8 @@ struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_
 {
      struct blockchain_Node* current = node;
      
-     while(current) {
+     while(current)
+     {
          if(nid_numb == current->nid) {
              return current;
          }
@@ -63,20 +64,22 @@ void deleteNode(struct blockchain_Node *fisrt_node, int nid_numb)
 {
     struct blockchain_Node* current = fisrt_node;
     struct blockchain_Node* previous=current;
-    struct blockchain_Node* node_to_delete = (struct blockchain_Node *) malloc(sizeof(struct blockchain_Node));
+    struct blockchain_Node* node_to_delete;
 
     while(current != NULL)
     {
+        node_to_delete = NULL;
         if(nid_numb == current->nid) {
             node_to_delete = current;
             previous->next=current->next;
         }
         previous = current;
         current = current->next;
+        if(node_to_delete != NULL)
+        {
+            free(node_to_delete);
+        }
     }
-    // if(node_to_delete!=NULL){
-        free(node_to_delete);
-    // }   
 }
 
 void freeBlockChainNode(struct blockchain_Node *node)
@@ -98,10 +101,12 @@ int main(int argc, const char* argv[])
     struct blockchain_Node *first_node=createNode(0);
     addNode(first_node, 13);
     addNode(first_node, 0);
+    addNode(first_node, 13);
     addNode(first_node, 1);
+    addNode(first_node, 13);
     addNode(first_node, 2);
     addNode(first_node, 13);
-    // deleteNode(first_node, 13);
+    deleteNode(first_node, 13);
     
     int i = 0; 
     struct blockchain_Node *current = first_node;
