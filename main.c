@@ -30,6 +30,7 @@ struct blockchain_Node* createNode(int nid_numb)
     struct blockchain_Node *bc = (struct blockchain_Node *) malloc(sizeof(struct blockchain_Node));
     bc->nid = nid_numb;
     bc->bid_array_size = 0;
+    bc->bid_array = malloc(10*sizeof(char*));
     bc->next = NULL;
 
     return bc;
@@ -77,6 +78,7 @@ void deleteNode(struct blockchain_Node *fisrt_node, int nid_numb)
         current = current->next;
         if(node_to_delete != NULL)
         {
+            free(node_to_delete->bid_array);
             free(node_to_delete);
         }
     }
@@ -98,46 +100,24 @@ void freeBlockChainNode(struct blockchain_Node *node)
     {
         tmp = node;
         node = node->next;
-        printf("Freeing node with %d\n", tmp->nid);
+        free(tmp->bid_array);
         free(tmp);
-        
     }
 }
 
-
-void freeBlockChainNodeBid(struct blockchain_Node *node)
-{
-    struct blockchain_Node *tmp;
-    while(node != NULL)
-    {
-        tmp = node;
-        node = node->next;
-        if(tmp->bid_array_size>0)
-        {
-            printf("Freeing array from node with %d\n", tmp->nid);
-            free(tmp->bid_array);
-        } 
-    }
-}
 void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string)
 {
     struct blockchain_Node *current = node;
-    int incrementor = 0;
-    
+       
      while(current !=NULL)
      {
          if(nid_numb == current->nid)
          {
+             current->bid_array[current->bid_array_size] = bid_string;
              current->bid_array_size++;
-             current->bid_array = malloc(current->bid_array_size*sizeof(char*));
-             current->bid_array[incrementor] = bid_string;
-             incrementor++;
          }
          current = current->next;
      }
-
-    //  free(current->bid_array);
-
 }
 
 int main(int argc, const char* argv[])
@@ -151,7 +131,8 @@ int main(int argc, const char* argv[])
     addNode(first_node, 13);
     addNode(first_node, 2);
     addNode(first_node, 13);
-    addBid(first_node,2,"222");
+    addBid(first_node,13,"bid1");
+    addBid(first_node,2,"bid2");
     deleteNode(first_node,1);
     // deleteAllNodes(first_node);
     
@@ -159,15 +140,14 @@ int main(int argc, const char* argv[])
     struct blockchain_Node *current = first_node;
     while(current)
     {
-        printf("NODE[%d] : %d with bidsize: %d\n", i, current->nid, current->bid_array_size);
+        printf("NODE[%d] -> %d: ", i, current->nid);
         i++;
-        // for(int i = 0; i <current->bid_array_size; i++) {
-        //     printf("%s ", current->bid_array[i]);
-        // }
-        // printf("\n");
+        for(int i = 0; i < current->bid_array_size; i++) {
+            printf("%s, ", current->bid_array[i]);
+        }
+        printf("\n");
         current = current->next;
     }
-    freeBlockChainNodeBid(first_node);
     freeBlockChainNode(first_node);
     return 0;
 }
