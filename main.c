@@ -15,7 +15,7 @@ struct blockchain_Node* createNode(int nid_numb);
 void addNode(struct blockchain_Node *node, int nid);
 
 struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb);
-struct blockchain_Node* deleteNode(struct blockchain_Node *node, int nid_numb);
+void deleteNode(struct blockchain_Node *node, int nid_numb);
 
 int addBid(struct blockchain_Node *node, int nid_numb, char* bid_string);
 int rmBid(struct blockchain_Node *node, char* bid_string);
@@ -59,53 +59,58 @@ struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_
      return current; 
 }
 
-struct blockchain_Node* deleteNode(struct blockchain_Node *node, int nid_numb)
+void deleteNode(struct blockchain_Node *fisrt_node, int nid_numb)
 {
-    struct blockchain_Node* current = node;
-    struct blockchain_Node* new = NULL;
-    while(current) {
-        if (nid_numb != current->nid) {
-            addNode(new, current->nid);
+    struct blockchain_Node* current = fisrt_node;
+    struct blockchain_Node* previous=current;
+    struct blockchain_Node* node_to_delete = (struct blockchain_Node *) malloc(sizeof(struct blockchain_Node));
+
+    while(current != NULL)
+    {
+        if(nid_numb == current->nid) {
+            node_to_delete = current;
+            previous->next=current->next;
         }
+        previous = current;
+        current = current->next;
     }
-    *node=*new;
-    return new;
+    // if(node_to_delete!=NULL){
+        free(node_to_delete);
+    // }   
 }
 
 void freeBlockChainNode(struct blockchain_Node *node)
 {
-     printf("Hello from FREE--FREE!\n");
     struct blockchain_Node *tmp;
     while(node != NULL)
     {
-        printf("Hello from FREE!\n");
         tmp = node;
         node = node->next;
+        printf("Freeing node with %d\n", tmp->nid);
         free(tmp);
+        
     }
 }
 
-
 int main(int argc, const char* argv[])
 {
-   
-   // the very first node with nid = 0; its like genesis node.. 
-   struct blockchain_Node *first_node=createNode(0);
-
-    addNode(first_node, 12);
-    // free(first_node);
-    addNode(first_node, 9);
-    // free(first_node);
-   int i = 0; 
-//    struct blockchain_Node *current = new_node2;
-//    printf("Current: %p", current);
+    // the very first node with nid = 0; its like genesis node.. 
+    struct blockchain_Node *first_node=createNode(0);
+    addNode(first_node, 13);
+    addNode(first_node, 0);
+    addNode(first_node, 1);
+    addNode(first_node, 2);
+    addNode(first_node, 13);
+    // deleteNode(first_node, 13);
+    
+    int i = 0; 
     struct blockchain_Node *current = first_node;
-     while(current) {
-         printf("NODE[%d] : %d\n", i, current->nid);
-         i++;
-         current = current->next;
-     }
+    while(current)
+    {
+        printf("NODE[%d] : %d\n", i, current->nid);
+        i++;
+        current = current->next;
+    }
     freeBlockChainNode(first_node);
-    // free(first_node);
     return 0;
 }
