@@ -21,7 +21,7 @@ void deleteNode(struct blockchain_Node *node, int nid_numb);
 void deleteAllNodes(struct blockchain_Node *fisrt_node);
 
 void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string);
-int rmBid(struct blockchain_Node *node, char* bid_string);
+void rmBid(struct blockchain_Node *node, char* bid_string);
 
 void freeBlockChainNode(struct blockchain_Node *node);
 
@@ -120,6 +120,27 @@ void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string)
      }
 }
 
+void rmBid(struct blockchain_Node *node, char* bid_string)
+{
+     struct blockchain_Node *current = node;
+       
+     while(current !=NULL)
+     {
+         for (int i=0; i < current->bid_array_size; i++) {
+             if (strcmp(bid_string,current->bid_array[i])==0)
+             {
+                 for (int index=i; index<current->bid_array_size-1; index++)
+                 {
+                     current->bid_array[index] = current->bid_array[index+1]; 
+
+                 }
+             }
+         }
+         current = current->next;
+     }
+
+}
+
 int main(int argc, const char* argv[])
 {
     // the very first node with nid = 0; its like genesis node.. 
@@ -133,6 +154,8 @@ int main(int argc, const char* argv[])
     addNode(first_node, 13);
     addBid(first_node,13,"bid1");
     addBid(first_node,2,"bid2");
+    addBid(first_node,2,"morebidAt2");
+    rmBid(first_node, "bid1");
     deleteNode(first_node,1);
     // deleteAllNodes(first_node);
     
