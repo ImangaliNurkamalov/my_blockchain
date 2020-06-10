@@ -1,13 +1,15 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define BID_SIZE 10;
+
 struct blockchain_Node {
     int nid;
-    int bid_size;
+    int bid_array_size;
     char** bid_array;
+    bool sync;
     struct blockchain_Node *next;
 } blockchain;
 
@@ -18,7 +20,7 @@ struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_
 void deleteNode(struct blockchain_Node *node, int nid_numb);
 void deleteAllNodes(struct blockchain_Node *fisrt_node);
 
-int addBid(struct blockchain_Node *node, int nid_numb, char* bid_string);
+void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string);
 int rmBid(struct blockchain_Node *node, char* bid_string);
 
 void freeBlockChainNode(struct blockchain_Node *node);
@@ -27,11 +29,10 @@ struct blockchain_Node* createNode(int nid_numb)
 {
     struct blockchain_Node *bc = (struct blockchain_Node *) malloc(sizeof(struct blockchain_Node));
     bc->nid = nid_numb;
-    // bc->bid_size =BID_SIZE;
+    bc->bid_array_size = 0;
     bc->next = NULL;
 
     return bc;
-    free(bc);
 }
 
 void addNode(struct blockchain_Node *node, int nid_numb)
@@ -50,7 +51,6 @@ void addNode(struct blockchain_Node *node, int nid_numb)
 struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb)
 {
      struct blockchain_Node* current = node;
-     
      while(current)
      {
          if(nid_numb == current->nid) {
@@ -82,6 +82,15 @@ void deleteNode(struct blockchain_Node *fisrt_node, int nid_numb)
     }
 }
 
+void deleteAllNodes(struct blockchain_Node *fisrt_node)
+{
+    struct blockchain_Node* current = fisrt_node;
+    struct blockchain_Node* need_to_free = fisrt_node->next;
+    current->next=NULL;
+    freeBlockChainNode(need_to_free);
+
+}
+
 void freeBlockChainNode(struct blockchain_Node *node)
 {
     struct blockchain_Node *tmp;
@@ -95,19 +104,44 @@ void freeBlockChainNode(struct blockchain_Node *node)
     }
 }
 
-void deleteAllNodes(struct blockchain_Node *fisrt_node)
+
+void freeBlockChainNodeBid(struct blockchain_Node *node)
 {
-    struct blockchain_Node* current = fisrt_node;
-    struct blockchain_Node* need_to_free = fisrt_node->next;
-    current->next=NULL;
-    freeBlockChainNode(need_to_free);
+    struct blockchain_Node *tmp;
+    while(node != NULL)
+    {
+        tmp = node;
+        node = node->next;
+        if(tmp->bid_array_size>0)
+        {
+            printf("Freeing array from node with %d\n", tmp->nid);
+            free(tmp->bid_array);
+        } 
+    }
+}
+void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string)
+{
+    struct blockchain_Node *current = node;
+    int incrementor = 0;
+    
+     while(current !=NULL)
+     {
+         if(nid_numb == current->nid)
+         {
+             current->bid_array_size++;
+             current->bid_array = malloc(current->bid_array_size*sizeof(char*));
+             current->bid_array[incrementor] = bid_string;
+             incrementor++;
+         }
+         current = current->next;
+     }
+
+    //  free(current->bid_array);
 
 }
 
-
 int main(int argc, const char* argv[])
 {
-    int a;
     // the very first node with nid = 0; its like genesis node.. 
     struct blockchain_Node *first_node=createNode(0);
     addNode(first_node, 13);
@@ -117,17 +151,23 @@ int main(int argc, const char* argv[])
     addNode(first_node, 13);
     addNode(first_node, 2);
     addNode(first_node, 13);
-    // deleteNode(first_node,1);
-    deleteAllNodes(first_node);
+    addBid(first_node,2,"222");
+    deleteNode(first_node,1);
+    // deleteAllNodes(first_node);
     
     int i = 0; 
     struct blockchain_Node *current = first_node;
     while(current)
     {
-        printf("NODE[%d] : %d\n", i, current->nid);
+        printf("NODE[%d] : %d with bidsize: %d\n", i, current->nid, current->bid_array_size);
         i++;
+        // for(int i = 0; i <current->bid_array_size; i++) {
+        //     printf("%s ", current->bid_array[i]);
+        // }
+        // printf("\n");
         current = current->next;
     }
+    freeBlockChainNodeBid(first_node);
     freeBlockChainNode(first_node);
     return 0;
 }
