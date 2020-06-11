@@ -54,3 +54,9 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node);
 int my_str_to_int(const char *str, const int start_ind);
 char *my_str_from_str(const char *str, const int start_ind);
 
+
+void my_handle_add_node(const char *buff, struct blockchain_Node **super_node);
+void my_handle_add_block(const char *buff, struct blockchain_Node **super_node);
+void my_handle_rm_node(const char *buff, struct blockchain_Node **super_node);
+void my_handle_rm_block(const char *buff, struct blockchain_Node **super_node);
+

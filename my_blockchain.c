@@ -227,124 +227,19 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
 
     if (my_str_nn_compare(buff, "add node", 0, 8) == true)
     {
-        //printf("Adding node\n");
-
-        const int node_id = my_str_to_int(buff, 9);
-        //printf("%d\n", node_id);
-
-        if (node_id < 0)
-        {
-            callErrorSix();
-        }
-        else
-        {
-            // Add node with node_id
-            if (*super_node == NULL)
-            {
-                *super_node = createNode(node_id);
-            }
-            else if (search_for_a_node(*super_node, node_id) != NULL)
-            {
-                callErrorTwo();
-            }
-            else
-            {
-                addNode(*super_node, node_id);
-            }
-        }
+        my_handle_add_node(buff, super_node);
     }
     else if (my_str_nn_compare(buff, "add block", 0, 9) == true)
     {
-        //printf("Adding block\n");
-
-        const char *bid = my_str_from_str(buff, 10);
-        
-        if (bid == NULL)
-        {
-            callErrorSix();
-        }
-        else
-        {
-            //printf("%s\n", bid);
-            const int bid_len = my_str_len(bid);
-            const int node_id = my_str_to_int(buff, 10 + bid_len + 1);
-            //printf("%d\n", node_id);
-
-            if (node_id < -1)
-            {
-                callErrorSix();
-            }
-            else if (node_id == -1)
-            {
-                // Add block to all nodes
-            }
-            else
-            {
-                // Add bid into node_id
-                struct blockchain_Node *node = search_for_a_node(*super_node, node_id);
-                if (node == NULL)
-                {
-                    callErrorFour();
-                }
-                else
-                {
-                    // Check if block is already there in Node
-                }
-            }
-        }
-
-        // Temporary
-        free((char *)bid);
+        my_handle_add_block(buff, super_node);
     }
     else if (my_str_nn_compare(buff, "rm node", 0, 7) == true)
     {
-        //printf("Removing node\n");
-
-        const int node_id = my_str_to_int(buff, 8);
-        //printf("%d\n", node_id);
-
-        if (node_id < -1)
-        {
-            callErrorSix();
-        }
-        else if (node_id == -1)
-        {
-            freeNodes(*super_node);
-            *super_node = NULL;
-        }
-        else
-        {
-            // Remove node with node _id
-        }
+        my_handle_rm_node(buff, super_node);
     }
     else if (my_str_nn_compare(buff, "rm block", 0, 8) == true)
     {
-        //printf("Removing block\n");
-
-        const char *bid = my_str_from_str(buff, 9);
-        
-        if (bid == NULL)
-        {
-            callErrorSix();
-        }
-        else
-        {
-            //printf("Bid to remove %s\n", bid);
-            const int bid_len = my_str_len(bid);
-            const int str_full_len = my_str_len(buff) - 1;
-
-            if ((bid_len + 9) != str_full_len)
-            {
-                callErrorSix();
-            }
-            else
-            {
-                // Remove bid from all nodes
-            }
-        }
-
-        // Temporary
-        free((char *)bid);
+        my_handle_rm_block(buff, super_node);
     }
     else if (my_str_nn_compare(buff, "sync", 0, 4) == true)
     {
@@ -353,12 +248,10 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
     }
     else if (my_str_nn_compare(buff, "ls", 0, 2) == true)
     {
-        //printf("Ls command!\n");
         printNode(*super_node, false);
     }
     else if (my_str_nn_compare(buff, "quit", 0, 4) == true)
     {
-        //printf("Quit command!\n");
         return BREAK_READING;
     }
     else
@@ -487,6 +380,117 @@ char *my_str_from_str(const char *str, const int start_ind)
         return str_ret;
     }
 }
+
+void my_handle_add_node(const char *buff, struct blockchain_Node **super_node)
+{
+    const int node_id = my_str_to_int(buff, 9);
+
+    if (node_id < 0)
+    {
+        callErrorSix();
+    }
+    else
+    {
+        // Add node with node_id
+        if (*super_node == NULL)
+        {
+            *super_node = createNode(node_id);
+        }
+        else if (search_for_a_node(*super_node, node_id) != NULL)
+        {
+            callErrorTwo();
+        }
+        else
+        {
+            addNode(*super_node, node_id);
+        }
+    }
+}
+
+void my_handle_add_block(const char *buff, struct blockchain_Node **super_node)
+{
+    const char *bid = my_str_from_str(buff, 10);
+    if (bid == NULL)
+    {
+        callErrorSix();
+    }
+    else
+    {
+        const int bid_len = my_str_len(bid);
+        const int node_id = my_str_to_int(buff, 10 + bid_len + 1);
+
+        if (node_id < -1)
+        {
+            callErrorSix();
+        }
+        else if (node_id == -1)
+        {
+            // Add block to all nodes
+        }
+        else
+        {
+            // Add bid into node_id
+            struct blockchain_Node *node = search_for_a_node(*super_node, node_id);
+            if (node == NULL)
+            {
+                callErrorFour();
+            }
+            else
+            {
+                // Check if block is already there in Node
+            }
+        }
+    }
+
+    // Temporary
+    free((char *)bid);
+}
+
+void my_handle_rm_node(const char *buff, struct blockchain_Node **super_node)
+{
+    const int node_id = my_str_to_int(buff, 8);
+    if (node_id < -1)
+    {
+        callErrorSix();
+    }
+    else if (node_id == -1)
+    {
+        freeNodes(*super_node);
+        *super_node = NULL;
+    }
+    else
+    {
+        // Remove node with node _id
+    }
+}
+
+void my_handle_rm_block(const char *buff, struct blockchain_Node **super_node)
+{
+    const char *bid = my_str_from_str(buff, 9);
+    if (bid == NULL)
+    {
+        callErrorSix();
+    }
+    else
+    {
+        const int bid_len = my_str_len(bid);
+        const int str_full_len = my_str_len(buff) - 1;
+
+        if ((bid_len + 9) != str_full_len)
+        {
+            callErrorSix();
+        }
+        else
+        {
+            // Remove bid from all nodes
+        }
+    }
+
+    // Temporary
+    free((char *)bid);
+}
+
+
 
 
 
