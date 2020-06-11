@@ -3,56 +3,93 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-// #define READLINE_READ_SIZE 2
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-// static struct Storage **big_storage = NULL; ///< Global static linked list variable to hold all read lines of characters from file description
+#define BID_SIZE 10;
 
-/// @brief Structure to hold Block info
-struct Block
+#define BREAK_READING 1
+#define CONTINUE_READING 0
+
+#define MAX_READ_SIZE 512
+
+struct blockchain_Node {
+    int nid;
+    // int bid_size;
+    // char** bid_array;
+    struct blockchain_Node *next;
+} blockchain;
+
+struct blockchain_Node* createNode(int nid_numb);
+void addNode(struct blockchain_Node *node, int nid);
+
+struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb);
+struct blockchain_Node* deleteNode(struct blockchain_Node *node, int nid_numb);
+
+int get_blockchain_size(struct blockchain_Node *node);
+
+int addBid(struct blockchain_Node *node, int nid_numb, char* bid_string);
+int rmBid(struct blockchain_Node *node, char* bid_string);
+
+enum action
 {
-    char *id;
+    ADD = 1,
+    REMOVE = 2
 };
 
-/// @brief Structure to hold Node info
-struct Node
+enum point
 {
-    int id;
-    struct Block block;
+    NODE = 1,
+    BLOCK = 2
 };
 
-/// @brief Structure to handle chain of nodes
-struct BlockChain
+enum affected
 {
-    struct Node;
-    struct BlockChain* next;
+    ONE = 1,
+    ALL = 2
 };
 
-struct Block createBlock(char *id);
-struct Node createNode(int id);
-struct BlockChain *createBlockChain(struct Node node);
-void addBlockChain(struct BlockChain *head, struct Node node);
-void freeBlockChain(struct BlockChain *head);
+struct add_rm_t
+{
+    enum action action_t;
+    enum point  point_t;
+    enum affected affected_t;
+    int node_id;
+    char *block_id;
+};
 
-/// @brief Function to create BlockChain 
-/// @param data Data the storage is created with
-/// @return Pointer to the storage created
-// struct Storage *createStorage(char *data);
+struct prompt_t
+{
+    bool is_add_rm_cmd;
+    bool is_sync_cmd;
+    bool is_ls_cmd;
 
-// /// @brief Function to add storage into linked list
-// /// @param head Pointer to head of the list
-// /// @param data Data out of which storage is created and appended to the end of the linked list
-// void addStorage(struct Storage *head, char *data);
+    struct add_rm_t add_rm_cmd;
+    enum affected ls_affected;
 
-// /// @brief Function to free out allocated memory from heap
-// /// @param storage Data to free out
-// void freeStorage(struct Storage **storage);
+    bool failure;
+};
 
-// /// @brief Function to check if all characters in buffer is zero or not
-// /// @param buff Buffer to check for characters
-// /// @return True if all are zeros
-// bool isAllZeros(char *buff);
+void callErrorOne();
+void callErrorTwo();
+void callErrorThree();
+void callErrorFour();
+void callErrorFive();
+void callErrorSix();
 
-// /// @brief Main readling function
-// /// @param fd File description
-// /// @return String in the same line
-// char* myReadline(int fd);
+void printNode(struct blockchain_Node *node, const bool print_blocks);
+
+int my_str_len(const char *str);
+int my_str_write(const int fd, const char *str);
+int my_int_write(const int fd, const int input);
+int my_prompt_write(const int fd, const bool is_sync, const int node_size);
+bool my_str_compare(const char *left, const char *right);
+bool my_str_n_compare(const char *left, const char *right, const int len);
+bool my_str_nn_compare(const char *left, const char *right, const int start_ind, const int len);
+struct prompt_t my_prompt_read(const int fd);
+
+int my_prompt_handle(const int fd, struct blockchain_Node **super_node);
+int my_str_to_int(const char *str, const int start_ind);
+
+
