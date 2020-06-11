@@ -12,6 +12,15 @@
 #define BREAK_READING 1
 #define CONTINUE_READING 0
 
+#define ADD_NODE_CMD  1
+#define ADD_BLOCK_CMD 2
+#define RM_NODE_CMD   3
+#define RM_BLOCK_CMD  4
+#define LS_CMD        5
+#define SYNC_CMD      6
+#define QUIT_CMD      7
+#define UNKNOWN_CMD   8
+
 #define MAX_READ_SIZE 512
 
 struct blockchain_Node {
@@ -50,13 +59,16 @@ bool my_str_compare(const char *left, const char *right);
 bool my_str_n_compare(const char *left, const char *right, const int len);
 bool my_str_nn_compare(const char *left, const char *right, const int start_ind, const int len);
 
+
+
+
 int my_prompt_handle(const int fd, struct blockchain_Node **super_node);
-int my_str_to_int(const char *str, const int start_ind);
-char *my_str_from_str(const char *str, const int start_ind);
-
-
 void my_handle_add_node(const char *buff, struct blockchain_Node **super_node);
 void my_handle_add_block(const char *buff, struct blockchain_Node **super_node);
 void my_handle_rm_node(const char *buff, struct blockchain_Node **super_node);
 void my_handle_rm_block(const char *buff, struct blockchain_Node **super_node);
 
+int my_read_from_console(const int fd, char *buff);
+int my_blockchain_command(const char *str);
+int my_str_to_int(const char *str, const int start_ind);
+char *my_str_from_str(const char *str, const int start_ind);
