@@ -13,6 +13,8 @@ int main(int argc, const char* argv[])
     struct blockchain_Node **super_node = (struct blockchain_Node **) malloc (sizeof(struct blockchain_Node *));
     *super_node = NULL;
 
+    // READING BACKUP BLOCKCHAIN
+
     int i = 0;
     while (i++ < 5)
     {

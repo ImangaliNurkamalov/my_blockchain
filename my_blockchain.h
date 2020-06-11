@@ -79,6 +79,7 @@ void callErrorFive();
 void callErrorSix();
 
 void printNode(struct blockchain_Node *node, const bool print_blocks);
+void freeNodes(struct blockchain_Node *node);
 
 int my_str_len(const char *str);
 int my_str_write(const int fd, const char *str);

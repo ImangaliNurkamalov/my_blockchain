@@ -366,10 +366,10 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
     }
     else if (my_str_nn_compare(buff, "rm node", 0, 7) == true)
     {
-        printf("Removing node\n");
+        //printf("Removing node\n");
 
         const int node_id = my_str_to_int(buff, 8);
-        printf("%d\n", node_id);
+        //printf("%d\n", node_id);
 
         if (node_id < -1)
         {
@@ -377,7 +377,8 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
         }
         else if (node_id == -1)
         {
-            // Remove all nodes
+            freeNodes(*super_node);
+            *super_node = NULL;
         }
         else
         {
@@ -395,12 +396,12 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
     }
     else if (my_str_nn_compare(buff, "ls", 0, 2) == true)
     {
-        printf("Ls command!\n");
+        //printf("Ls command!\n");
         printNode(*super_node, false);
     }
     else if (my_str_nn_compare(buff, "quit", 0, 4) == true)
     {
-        printf("Quit command!\n");
+        //printf("Quit command!\n");
         return BREAK_READING;
     }
     else
@@ -470,6 +471,21 @@ void printNode(struct blockchain_Node *node, const bool print_blocks)
         head = head->next;
     }
 }
+
+void freeNodes(struct blockchain_Node *node)
+{
+    struct blockchain_Node *temp, *head = node;
+    while(head != NULL)
+    {
+        temp = head;
+        head = head->next;
+        temp->next = NULL;
+        free(temp);
+    }
+}
+
+
+
 
 
 
