@@ -42,7 +42,9 @@ struct blockchain_Node* createNode(int nid_numb)
     struct blockchain_Node *bc = (struct blockchain_Node *) malloc(sizeof(struct blockchain_Node));
     bc->nid = nid_numb;
     bc->bid_array_size = 0;
-    bc->bidList = NULL;
+    bc->bidList = (struct blockList *) malloc(sizeof(struct blockList));
+    bc->bidList->head = NULL;
+    bc->bidList->tail = NULL;
     bc->next = NULL;
 
     return bc;
@@ -70,30 +72,51 @@ struct blocks* createBlock(char* data)
     return bl;
 }
 
-// void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string)
-// {
+void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string)
+{
 
-//     struct blockchain_Node *current = node;
-       
-//      while(current !=NULL)
-//      {
-//          if(nid_numb == current->nid)
-//          {
-//              struct blocks* new_block = createBlock(bid_string);  
-//              if(current->bidList == NULL) {
-//                 current->bidList = new_block;
-//              }
-//             //  while(current->bid != NULL)
-//             //  {
-//             //      current->bid = current->bid->next_block;
-//             //     }
-//             //  current->bid->block_data = bid_string;
-//             //  current->bid->next_block = NULL;
-//              current->bid_array_size++;
-//          }
-//          current = current->next;
-//      }
-// }
+    struct blockchain_Node *current = node;
+    printf("current->bidList->head: %p\n", current->bidList->head);
+
+    while(current !=NULL)
+    {
+         if(nid_numb == current->nid)
+         {
+             struct blocks *new_block = createBlock(bid_string);
+             if(current->bidList->head == NULL) {
+                 current->bidList->head = new_block;
+                 current->bidList->tail = current->bidList->head; 
+                  current->bid_array_size++;
+             } else {
+                 struct blocks *current_block = current->bidList->tail;
+                 current_block->next_block = new_block;
+                 current->bidList->tail = new_block;
+                current->bid_array_size++;
+            }
+        }
+        current = current->next;
+    }
+      /* 
+     while(current !=NULL)
+     {
+         if(nid_numb == current->nid)
+         {
+             struct blocks* new_block = createBlock(bid_string);  
+             if(current->bidList == NULL) {
+                current->bidList = new_block;
+             }
+            //  while(current->bid != NULL)
+            //  {
+            //      current->bid = current->bid->next_block;
+            //     }
+            //  current->bid->block_data = bid_string;
+            //  current->bid->next_block = NULL;
+             current->bid_array_size++;
+         }
+         current = current->next;
+     }
+     */
+}
 // struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb)
 // {
 //      struct blockchain_Node* current = node;
@@ -157,26 +180,26 @@ struct blocks* createBlock(char* data)
 void freeBlockChainNode(struct blockchain_Node *node)
 {
       printf("Hello from freeBlockChainNode!\n");
-    // struct blocks *tmp_bid;
+    struct blocks *tmp_bid;
     struct blockchain_Node *tmp;
     struct blockchain_Node *current = node;
     while(current != NULL)
     {
          printf("Free: %d\n", current->nid);
         tmp = current;
-        //     for (int index=0; index<tmp->bid_array_size; index++) {
+            for (int index=0; index<tmp->bid_array_size; index++) {
                     
-        //         if(tmp->bid->block_data != NULL) {
+                if(tmp->bidList->head != NULL) {
                     
-        //             tmp_bid = tmp->bid;
-        //             tmp->bid = tmp->bid->next_block;
-        //              printf("Free: %s\n", tmp_bid->block_data);
-        //             free(tmp_bid); 
-        //         }     
+                    tmp_bid = tmp->bidList->head;
+                    tmp->bidList->head = tmp->bidList->head->next_block;
+                     printf("Free tmp_bid->block_data: %s\n", tmp_bid->block_data);
+                    free(tmp_bid); 
+                }     
 
-        // }
+        }
         current = current->next;
-        
+        free(tmp->bidList);
         free(tmp);
     }
 }
@@ -219,7 +242,7 @@ int main(int argc, const char* argv[])
     addNode(first_node, 2);
     addNode(first_node, 13);
 
-    // addBid(first_node,13,"bid1");
+    addBid(first_node,13,"bid1");
     // addBid(first_node,2,"bid2");
     // addBid(first_node,2,"morebidAt2");
     // rmBid(first_node, "bid1");
@@ -231,12 +254,12 @@ int main(int argc, const char* argv[])
     struct blockchain_Node *current = first_node;
     while(current)
     {
-        printf("NODE[%d] -> %d: and bid: %p ", i, current->nid, current->bidList);
+        printf("NODE[%d] -> %d:", i, current->nid);
         i++;
-        while(current->bidList->head != NULL) {
-            printf("%p, ", current->bidList->head);
-            current->bidList->head = current->bidList->head->next_block;
-        }
+        // while(current->bidList->head != NULL) {
+        //     printf("%p, ", current->bidList->head);
+        //     current->bidList->head = current->bidList->head->next_block;
+        // }
         printf("\n");
         current = current->next;
     }
