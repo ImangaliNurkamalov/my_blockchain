@@ -255,7 +255,46 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
     }
     else if (my_str_nn_compare(buff, "add block", 0, 9) == true)
     {
-        printf("Adding block\n");
+        //printf("Adding block\n");
+
+        const char *bid = my_str_from_str(buff, 10);
+        
+        if (bid == NULL)
+        {
+            callErrorSix();
+        }
+        else
+        {
+            //printf("%s\n", bid);
+            const int bid_len = my_str_len(bid);
+            const int node_id = my_str_to_int(buff, 10 + bid_len + 1);
+            //printf("%d\n", node_id);
+
+            if (node_id < -1)
+            {
+                callErrorSix();
+            }
+            else if (node_id == -1)
+            {
+                // Add block to all nodes
+            }
+            else
+            {
+                // Add bid into node_id
+                struct blockchain_Node *node = search_for_a_node(*super_node, node_id);
+                if (node == NULL)
+                {
+                    callErrorFour();
+                }
+                else
+                {
+                    // Check if block is already there in Node
+                }
+            }
+        }
+
+        // Temporary
+        free((char *)bid);
     }
     else if (my_str_nn_compare(buff, "rm node", 0, 7) == true)
     {
@@ -281,6 +320,8 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
     else if (my_str_nn_compare(buff, "rm block", 0, 8) == true)
     {
         printf("Removing block\n");
+
+        
     }
     else if (my_str_nn_compare(buff, "sync", 0, 4) == true)
     {
@@ -314,7 +355,7 @@ int my_str_to_int(const char *str, const int start_ind)
     {
         return -1;
     }
-    else if (str_len < start_ind)
+    else if (str_len <= start_ind)
     {
         return -2;
     }
@@ -376,6 +417,55 @@ void freeNodes(struct blockchain_Node *node)
         free(temp);
     }
 }
+
+char *my_str_from_str(const char *str, const int start_ind)
+{
+    // Subtracting '\n' (pressing enter creates new line)
+    const int str_len = my_str_len(str) - 1;
+
+    char *str_ret = NULL;
+    int str_ret_len = 0;
+    
+    if (str_len < start_ind)
+    {
+        return str_ret;
+    }
+    else
+    {
+        const int end_ind = str_len;
+
+        // Get the length of str up until space or end
+        for (int i = start_ind; i < end_ind; ++i)
+        {
+            if (str[i] != ' ')
+            {
+                ++str_ret_len;
+            }
+            else
+            {
+                break;
+            }
+        }
+        
+        if (str_ret_len == 0)
+        {
+            return str_ret;
+        }
+        else
+        {
+            str_ret = (char *) malloc ((str_ret_len + 1) * sizeof(char));
+        }        
+        
+        for (int i = start_ind; i < str_ret_len + start_ind; ++i)
+        {
+            str_ret[i - start_ind] = str[i];
+        }
+        str_ret[str_ret_len] = 0;
+        return str_ret;
+    }
+}
+
+
 
 
 

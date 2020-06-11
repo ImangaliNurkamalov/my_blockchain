@@ -52,5 +52,5 @@ bool my_str_nn_compare(const char *left, const char *right, const int start_ind,
 
 int my_prompt_handle(const int fd, struct blockchain_Node **super_node);
 int my_str_to_int(const char *str, const int start_ind);
-
+char *my_str_from_str(const char *str, const int start_ind);
 
