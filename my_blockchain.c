@@ -319,9 +319,32 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
     }
     else if (my_str_nn_compare(buff, "rm block", 0, 8) == true)
     {
-        printf("Removing block\n");
+        //printf("Removing block\n");
 
+        const char *bid = my_str_from_str(buff, 9);
         
+        if (bid == NULL)
+        {
+            callErrorSix();
+        }
+        else
+        {
+            //printf("Bid to remove %s\n", bid);
+            const int bid_len = my_str_len(bid);
+            const int str_full_len = my_str_len(buff) - 1;
+
+            if ((bid_len + 9) != str_full_len)
+            {
+                callErrorSix();
+            }
+            else
+            {
+                // Remove bid from all nodes
+            }
+        }
+
+        // Temporary
+        free((char *)bid);
     }
     else if (my_str_nn_compare(buff, "sync", 0, 4) == true)
     {
