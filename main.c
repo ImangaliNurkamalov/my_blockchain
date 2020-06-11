@@ -229,6 +229,8 @@ int main(int argc, const char* argv[])
      deleteBlock(first_node, "bid2");
 
     deleteNode(first_node,13);
+      addNode(first_node, 300);
+        addBlock(first_node,300,"300");
     // deleteAllNodes(first_node);
     
     int i = 0; 
