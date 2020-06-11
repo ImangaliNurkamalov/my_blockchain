@@ -28,6 +28,7 @@ void addBid(struct blockchain_Node *node, int nid_numb, char* bid_string);
 void rmBid(struct blockchain_Node *node, char* bid_string);
 
 void freeBlockChainNode(struct blockchain_Node *node);
+void freeBlocks(struct blockchain_Node *node);
 
 struct blockchain_Node* createNode(int nid_numb)
 {
@@ -128,6 +129,18 @@ void deleteAllNodes(struct blockchain_Node *fisrt_node)
 
 }
 
+void freeBlocks(struct blockchain_Node *node)
+{
+    struct blocks *tmp_bid;
+    printf("Hello from FreeBlocks!");
+          while(node->bid !=NULL) {
+            printf("Hello from tmp->bid");
+            tmp_bid = node->bid;
+            node->bid = node->bid->next_block; 
+            free(tmp_bid);
+        }
+}
+  
 void freeBlockChainNode(struct blockchain_Node *node)
 {
     struct blockchain_Node *tmp;
@@ -135,7 +148,6 @@ void freeBlockChainNode(struct blockchain_Node *node)
     {
         tmp = node;
         node = node->next;
-        free(tmp->bid);
         free(tmp);
     }
 }
@@ -183,7 +195,7 @@ int main(int argc, const char* argv[])
     // addBid(first_node,2,"morebidAt2");
     // rmBid(first_node, "bid1");
 
-    deleteNode(first_node,1);
+    // deleteNode(first_node,1);
     // deleteAllNodes(first_node);
     
     int i = 0; 
@@ -199,6 +211,7 @@ int main(int argc, const char* argv[])
         printf("\n");
         current = current->next;
     }
-    freeBlockChainNode(first_node);
+    // freeBlocks(first_node);
+    // freeBlockChainNode(first_node);
     return 0;
 }
