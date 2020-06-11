@@ -212,117 +212,6 @@ bool my_str_nn_compare(const char *left, const char *right, const int start_ind,
     }
 }
 
-struct prompt_t my_prompt_read(const int fd)
-{
-    char buff[512];
-    const int read_sz = read(fd, &buff, 512);
-    struct prompt_t ret;
-    if (read_sz < 0)
-    {
-        ret.failure = true;
-        return ret;
-    }
-    else
-    {
-        ret.failure = false;
-    }
-
-    ret.is_add_rm_cmd = false;
-    ret.is_ls_cmd = false;
-    ret.is_sync_cmd = false;
-
-    struct add_rm_t add_rm_cmd;
-    add_rm_cmd.action_t = (enum action)ADD;        
-    add_rm_cmd.point_t = (enum point)NODE;
-    add_rm_cmd.affected_t = (enum affected)ONE;
-    add_rm_cmd.block_id = NULL;
-    add_rm_cmd.node_id = 0;
-
-    ret.add_rm_cmd = add_rm_cmd;
-
-    enum affected affected_ls_cmd;
-    affected_ls_cmd = (enum affected)ONE;
-
-    ret.ls_affected = affected_ls_cmd;
-
-    if (my_str_n_compare(buff, "add node", 8) == true)
-    {
-        printf("Adding node!\n");
-
-        ret.is_add_rm_cmd = true;
-        struct add_rm_t add_rm_cmd;
-
-        add_rm_cmd.action_t = (enum action)ADD;        
-        add_rm_cmd.point_t = (enum point)NODE;
-        add_rm_cmd.block_id = NULL;
-        add_rm_cmd.node_id = 0;
-
-        ret.add_rm_cmd = add_rm_cmd;
-    }
-    else if (my_str_n_compare(buff, "rm node", 7) == true)
-    {
-        printf("Removing node!\n");
-
-        ret.is_add_rm_cmd = true;
-        struct add_rm_t add_rm_cmd;
-
-        add_rm_cmd.action_t = (enum action)REMOVE;        
-        add_rm_cmd.point_t = (enum point)NODE;
-        add_rm_cmd.block_id = NULL;
-        add_rm_cmd.node_id = 0;
-
-        ret.add_rm_cmd = add_rm_cmd;
-    }
-    else if (my_str_n_compare(buff, "add block", 9) == true)
-    {
-        printf("Adding block!\n");
-
-        ret.is_add_rm_cmd = true;
-        struct add_rm_t add_rm_cmd;
-
-        add_rm_cmd.action_t = (enum action)ADD;        
-        add_rm_cmd.point_t = (enum point)BLOCK;
-        add_rm_cmd.block_id = NULL;
-        add_rm_cmd.node_id = 0;
-
-        ret.add_rm_cmd = add_rm_cmd;
-    }
-    else if (my_str_n_compare(buff, "rm block", 8) == true)
-    {
-        printf("Removing block!\n");
-
-        ret.is_add_rm_cmd = true;
-        struct add_rm_t add_rm_cmd;
-
-        add_rm_cmd.action_t = (enum action)REMOVE;        
-        add_rm_cmd.point_t = (enum point)BLOCK;
-        add_rm_cmd.block_id = NULL;
-        add_rm_cmd.node_id = 0;
-        
-        ret.add_rm_cmd = add_rm_cmd;
-    }
-    else if (my_str_n_compare(buff, "ls", 2) == true)
-    {
-        printf("Ls command!\n");
-
-        ret.is_ls_cmd = true;
-    }
-    else if (my_str_n_compare(buff, "sync", 4) == true)
-    {
-        printf("Sync command!\n");
-
-        ret.is_sync_cmd = true;
-    }
-    else
-    {
-        my_str_write(1, "Command not found\n");
-        ret.failure = true;
-        return ret;
-    }
-    
-    return ret;
-}
-
 int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
 {
     char buff[MAX_READ_SIZE];
@@ -331,6 +220,10 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
         buff[i] = 0;
     }
     const int read_sz = read(fd, &buff, MAX_READ_SIZE);
+    if (read_sz < 2)
+    {
+        callErrorSix();
+    }
 
     if (my_str_nn_compare(buff, "add node", 0, 8) == true)
     {
