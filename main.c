@@ -187,14 +187,17 @@ void deleteBlock(struct blockchain_Node *node, char* bid_string)
             {
                 if(listSize==1) {
                    current->bidList->head = NULL;
+                   current->bid_array_size = 0;
                 }
                 block_to_delete = current_block;
                
                 if (previous == current_block) {
                       current->bidList->head = current_block->next_block;
+                      current->bid_array_size--;
                 } else
                 {
                     previous->next_block = current_block->next_block;
+                    current->bid_array_size--;
                 }
             }
             previous = current_block;
