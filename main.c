@@ -37,58 +37,42 @@ void freeBlockChainNode(struct blockchain_Node *node);
 
 char** collect_uniue_blocks(struct blockchain_Node *node, int *block_numb);
 void sync(struct blockchain_Node *node);
+// void deleteBlockofNode(struct blockchain_Node *node, int nid);
 
 void sync(struct blockchain_Node *node)
 {
     int unique_block_numb;
     struct blockchain_Node *current = node;
-    struct blocks *current_head;
-    bool unique = true;
+    struct blocks *current_head, *block_to_delete;
     char ** array_of_blocks = collect_uniue_blocks(current, &unique_block_numb);
-    printf("unique_block_numb: %d\n", unique_block_numb);
-
+   
     while(current)
     {
         current_head = current->bidList->head;
         if(current_head != NULL)
         {
+            while(current_head){
+                block_to_delete = current_head;
+                current_head= current_head->next_block;
+                free(block_to_delete);
+            }     
+            current->bidList->head = NULL;
+            current->bid_array_size = 0;
+                
             for(int i=0; i<unique_block_numb; i++)
             {
-                while(current_head !=NULL)
-                {
-                    if(strcmp(current_head->block_data, array_of_blocks[i])==0)
-                    {
-                        unique = false;
-                    } 
-
-                    current_head = current_head->next_block;
-                }
-                if(unique)
-                {
-                    
-                    addBlock(current,current->nid,array_of_blocks[i]);
-                    current->bid_array_size++;
-                     printf("added1 array_of_blocks[%d]: %s\n", i, array_of_blocks[i]);   
-                }
+            addBlock(current,current->nid,array_of_blocks[i]);
             }
         } else {
             for(int i=0; i<unique_block_numb; i++)
             {
-                addBlock(current,current->nid,array_of_blocks[i]);
-                current->bid_array_size++;
-                printf("added0 array_of_blocks[%d]: %s\n", i, array_of_blocks[i]);
+            addBlock(current,current->nid,array_of_blocks[i]);
             }
-
         }
         current = current->next;
     }
-  
-
-
-
-    free(array_of_blocks);
+ free(array_of_blocks);
 }
-
 
 int number_of_blocks(struct blockchain_Node *node)
 {
@@ -104,8 +88,6 @@ int number_of_blocks(struct blockchain_Node *node)
 
 char** collect_uniue_blocks(struct blockchain_Node *node, int *block_numb)
 {
-    // int block_numb = number_of_blocks(node);
-    
     char ** blocks = malloc(100 * sizeof(char *));
     int increment = 0;
     struct blockchain_Node *current = node;
@@ -119,7 +101,7 @@ char** collect_uniue_blocks(struct blockchain_Node *node, int *block_numb)
             if(increment == 0)
             {
                 blocks[increment] = current_head->block_data;
-                printf("blocks[%d]: %s\n", increment, blocks[increment]);
+                
             } else {
                 for(int i=0; i<increment; i++)
                 {
@@ -131,8 +113,6 @@ char** collect_uniue_blocks(struct blockchain_Node *node, int *block_numb)
                 if(unique)
                 {
                     blocks[increment] =  current_head->block_data;
-                    printf("blocks[%d]: %s\n", increment, blocks[increment]);
-                    printf("current_head->block_data: %s\n", current_head->block_data);
                 }
             }
             increment++;
@@ -141,7 +121,6 @@ char** collect_uniue_blocks(struct blockchain_Node *node, int *block_numb)
         current_head = NULL;
        current = current->next;
     }
-    // blocks[increment] = "\0";
     *block_numb = increment;
     return blocks;
 }
@@ -159,10 +138,8 @@ struct blockchain_Node* createNode(int nid_numb)
     return bc;
 }
 
-
 void addNode(struct blockchain_Node *node, int nid_numb)
 {
-    // printf("Hello from addNode!\n");
     struct blockchain_Node* current = node;
     //get last node
     while(current != NULL && current->next != NULL){
@@ -204,18 +181,6 @@ void addBlock(struct blockchain_Node *node, int nid_numb, char* bid_string)
     }
   
 }
-// struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb)
-// {
-//      struct blockchain_Node* current = node;
-//      while(current)
-//      {
-//          if(nid_numb == current->nid) {
-//              return current;
-//          }
-//          current = current->next;
-//      }
-//      return current; 
-// }
 
 void deleteNode(struct blockchain_Node *fisrt_node, int nid_numb)
 {
@@ -251,7 +216,6 @@ void deleteAllNodes(struct blockchain_Node *fisrt_node)
     struct blockchain_Node* need_to_free = fisrt_node->next;
     current->next=NULL;
     freeBlockChainNode(need_to_free);
-
 }
 
 void freeBlockChainNode(struct blockchain_Node *node)
@@ -286,7 +250,7 @@ void deleteBlock(struct blockchain_Node *node, char* bid_string)
          previous = current->bidList->head;
          current_block = current->bidList->head;
          
-         while(current_block != NULL && current_block->next_block != NULL)
+         while(current_block != NULL)
          {
             block_to_delete = NULL;
             if(strcmp(current_block->block_data, bid_string) == 0)
@@ -328,22 +292,16 @@ int main(int argc, const char* argv[])
     addNode(first_node, 5);
     addNode(first_node, 6);
     addNode(first_node, 7);
+    deleteNode(first_node, 2);
 
     addBlock(first_node,1,"bid1");
     addBlock(first_node,2,"bid2");
-    // addBid(first_node,2,"bid2");
     addBlock(first_node,3,"bid3");
-    // addBid(first_node,2,"33333");
-    // deleteBlock(first_node, "33333");
-    //  deleteBlock(first_node, "bid2");
 
-    // deleteNode(first_node,13);
-    //   addNode(first_node, 300);
-    //     addBlock(first_node,300,"300");
-    //      addBlock(first_node,300,"33333");
-        //  deleteBlock(first_node, "300");
-    // deleteAllNodes(first_node);
+    // deleteBlock(first_node, "bid3");
+
     sync(first_node);
+
     int i = 0; 
     struct blockchain_Node *current = first_node;
     while(current)
@@ -358,15 +316,6 @@ int main(int argc, const char* argv[])
         printf("\n");
         current = current->next;
     }
-    
-    // int block_numb = (int) sizeof(array_of_blocks);
-    // printf("Size: %d\n", block_numb);
-    
-   
-    // for (int i=0; i<unique_block_numb; i++) {
-    //     free(array_of_blocks[i]);
-    // }
-    
     freeBlockChainNode(first_node);
     return 0;
 }
