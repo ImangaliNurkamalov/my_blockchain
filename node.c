@@ -72,6 +72,7 @@ void freeBlockChainNode(struct blockchain_Node *node)
         {
             tmp_bid = tmp->bidList->head;
             tmp->bidList->head = tmp->bidList->head->next_block;
+            free(tmp_bid->block_data);
             free(tmp_bid); 
         }
         current = current->next;

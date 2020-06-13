@@ -88,7 +88,7 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
             break;
 
         case LS_CMD:
-            printNode(*super_node, false);
+            printNode(*super_node, true);
             break;
 
         case QUIT_CMD:
@@ -135,7 +135,7 @@ void my_handle_add_node(const char *buff, struct blockchain_Node **super_node)
 
 void my_handle_add_block(const char *buff, struct blockchain_Node **super_node)
 {
-    const char *bid = my_str_from_str(buff, 10);
+    char *bid = my_str_from_str(buff, 10);
     if (bid == NULL)
     {
         callErrorSix();
@@ -148,29 +148,55 @@ void my_handle_add_block(const char *buff, struct blockchain_Node **super_node)
         if (node_id < -1)
         {
             callErrorSix();
+            free(bid);
         }
         else if (node_id == -1)
         {
             // Add block to all nodes
+            struct blockchain_Node *node = *super_node;
+            while (node != NULL)
+            {
+                // Check if block is already there in Node
+                char *bid_copy = my_str_copy(bid);
+                const int block_id_added = addBlock(*super_node, node->nid, bid_copy);
+                if (block_id_added == BLOCK_EXISTS)
+                {
+                    callErrorThree();
+                    free(bid_copy);
+                }
+                else if (block_id_added == NODE_NOT_EXIST)
+                {
+                    callErrorFour();
+                    free(bid_copy);
+                }
+                else
+                {
+                    // Do nothing
+                }
+                node = node->next;
+            }
+            free(bid);
         }
         else
         {
-            // Add bid into node_id
-            struct blockchain_Node *node = search_for_a_node(*super_node, node_id);
-            if (node == NULL)
+            // Check if block is already there in Node
+            const int block_id_added = addBlock(*super_node, node_id, bid);
+            if (block_id_added == BLOCK_EXISTS)
+            {
+                callErrorThree();
+                free(bid);
+            }
+            else if (block_id_added == NODE_NOT_EXIST)
             {
                 callErrorFour();
+                free(bid);
             }
             else
             {
-                // Check if block is already there in Node
-                addBlock(*super_node, node_id, (char *)bid);
+                // Do nothing
             }
         }
     }
-
-    // Temporary
-    free((char *)bid);
 }
 
 void my_handle_rm_node(const char *buff, struct blockchain_Node **super_node)
@@ -396,6 +422,8 @@ void printNode(struct blockchain_Node *node, const bool print_blocks)
                 {
                     my_str_write(1, ", ");
                 }
+
+                curr_block = curr_block->next_block;
             }
         }
 

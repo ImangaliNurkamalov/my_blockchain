@@ -28,5 +28,8 @@ int main(int argc, const char* argv[])
         }
     }
 
+    freeBlockChainNode(*super_node);
+    free(super_node);
+
     return 0;
 }

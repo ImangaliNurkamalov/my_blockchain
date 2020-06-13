@@ -1,4 +1,5 @@
 #include "block_chain.h"
+#include "include/helpers.h"
 
 struct blocks* createBlock(char* data)
 {
@@ -8,9 +9,10 @@ struct blocks* createBlock(char* data)
     return bl;
 }
 
-void addBlock(struct blockchain_Node *node, int nid_numb, char* bid_string)
+int addBlock(struct blockchain_Node *node, int nid_numb, char* bid_string)
 {
     struct blockchain_Node *current = node;
+    bool found_node = false;
     while(current !=NULL)
     {
          if(nid_numb == current->nid)
@@ -21,15 +23,40 @@ void addBlock(struct blockchain_Node *node, int nid_numb, char* bid_string)
                  current->bidList->tail = current->bidList->head; 
                   current->bid_array_size++;
              } else {
-                 struct blocks *current_block = current->bidList->tail;
+                 struct blocks *current_block = current->bidList->head;
+                 while (current_block != NULL)
+                 {
+                     if (my_str_compare(current_block->block_data, bid_string) == true)
+                     {
+                         free(new_block);
+                         return BLOCK_EXISTS;
+                     }
+                     else if (current_block->next_block == NULL)
+                     {
+                        break;
+                     }
+                     else
+                     {
+                         current_block = current_block->next_block;
+                     }
+                 }
                  current_block->next_block = new_block;
                  current->bidList->tail = new_block;
                 current->bid_array_size++;
             }
+            found_node = true;
         }
         current = current->next;
     }
-  
+    
+    if (found_node == false)
+    {
+        return NODE_NOT_EXIST;
+    }
+    else
+    {
+        return BLOCK_ADDED;
+    }
 }
 
 void deleteBlock(struct blockchain_Node *node, char* bid_string)

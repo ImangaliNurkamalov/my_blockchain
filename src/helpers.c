@@ -1,4 +1,5 @@
 #include "../include/helpers.h"
+#include <stdlib.h>
 #include <unistd.h>
 
 int my_str_len(const char *str)
@@ -106,4 +107,16 @@ bool my_str_nn_compare(const char *left, const char *right, const int start_ind,
         }
         return true;
     }
+}
+
+char *my_str_copy(const char *str)
+{
+    const int str_sz = my_str_len(str);
+    char *ret_str = (char *) malloc ((str_sz + 1) * sizeof(char));
+    for (int i = 0; i < str_sz; ++i)
+    {
+        ret_str[i] = str[i];
+    }
+    ret_str[str_sz] = 0;
+    return ret_str;
 }
