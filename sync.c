@@ -1,6 +1,6 @@
 #include "block_chain.h"
 
-void sync(struct blockchain_Node *node)
+void sync_blockchain(struct blockchain_Node *node)
 {
     int unique_block_numb;
     struct blockchain_Node *current = node;

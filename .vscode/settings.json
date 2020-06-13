@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "my_blockchain.h": "c",
-        "stat.h": "c"
+        "stat.h": "c",
+        "block_chain.h": "c"
     }
 }

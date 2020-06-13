@@ -33,4 +33,4 @@ void deleteBlock(struct blockchain_Node *node, char* bid_string);
 void freeBlockChainNode(struct blockchain_Node *node);
 
 char** collect_uniue_blocks(struct blockchain_Node *node, int *block_numb);
-void sync(struct blockchain_Node *node);
+void sync_blockchain(struct blockchain_Node *node);

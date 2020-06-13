@@ -1,5 +1,7 @@
 
-#include "my_blockchain.h"
+#include "../include/my_blockchain.h"
+#include "../include/error_msgs.h"
+#include "../include/helpers.h"
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -7,94 +9,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-void callErrorOne()
-{
-    my_str_write(1, "No more resources available on the computer\n");
-}
-
-void callErrorTwo()
-{
-    my_str_write(1, "This node already exists\n");
-}
-
-void callErrorThree()
-{
-    my_str_write(1, "This block already exists\n");
-}
-
-void callErrorFour()
-{
-    my_str_write(1, "Node doesn't exist\n");
-}
-
-void callErrorFive()
-{
-    my_str_write(1, "Block doesn't exist\n");
-}
-
-void callErrorSix()
-{
-    my_str_write(1, "Command not found\n");
-}
-
-int my_str_len(const char *str)
-{
-    int count = 0;
-    while(*str++ != 0)
-    {
-        ++count;
-    }
-    return count;
-}
-
-int my_str_write(const int fd, const char *str)
-{
-    return write(fd, str, my_str_len(str));
-}
-
-int my_int_write(const int fd, const int input)
-{
-    if (input < 0)
-    {
-        return -1;
-    }
-    else if (input == 0)
-    {
-        const int print_digit = 48;
-        return write(fd, &print_digit, 1);
-    }
-    else
-    {
-        int count_chars_printed = 0;
-        int len = 1;
-        int temp = input;
-        temp /= 10;
-        while (temp > 0)
-        {
-            ++len;
-            temp /= 10;
-        }
-
-        int print_digit = 48;
-        while (len > 0)
-        {
-            int power_10 = 1;
-            for (int j = 1; j < len; ++j)
-            {
-                power_10 *= 10;
-            }
-
-            print_digit = ( input / power_10 ) % 10 + 48;
-            count_chars_printed += write(fd, &print_digit, 1);
-            --len;
-        }
-        return count_chars_printed;
-    }
-}
-
 int my_prompt_write(const int fd, const bool is_sync, const int node_size)
 {
-    
     int sum_chars_printed = 0;
     int chars_printed = my_str_write(1, "[");
     if (chars_printed < 0)
@@ -137,79 +53,6 @@ int my_prompt_write(const int fd, const bool is_sync, const int node_size)
     }
 
     return sum_chars_printed;
-}
-
-bool my_str_compare(const char *left, const char *right)
-{
-    const int left_sz = my_str_len(left);
-    const int right_sz = my_str_len(right);
-
-    if (left_sz != right_sz)
-    {
-        return false;
-    }
-    else
-    {
-        for (int i = 0; i < left_sz; ++i)
-        {
-            if (left[i] != right[i])
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-}
-
-bool my_str_n_compare(const char *left, const char *right, const int len)
-{
-    const int left_sz = my_str_len(left);
-
-    if (left_sz < len)
-    {
-        return false;
-    }
-    else
-    {
-        for (int i = 0; i < len; ++i)
-        {
-            if (left[i] != right[i])
-            {
-                return false;
-            }
-        }
-        return true;
-    }
-}
-
-bool my_str_nn_compare(const char *left, const char *right, const int start_ind, const int len)
-{
-    const int left_sz = my_str_len(left);
-    const int right_sz = my_str_len(right);
-
-    if (len < 0)
-    {
-        return false;
-    }
-    else if (left_sz < start_ind + len)
-    {
-        return false;
-    }
-    else if (right_sz < len)
-    {
-        return false;
-    }
-    else
-    {
-        for (int i = 0; i < len; ++i)
-        {
-            if (left[start_ind + i] != right[i])
-            {
-                return false;
-            }
-        }
-        return true;
-    }
 }
 
 int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
@@ -321,6 +164,7 @@ void my_handle_add_block(const char *buff, struct blockchain_Node **super_node)
             else
             {
                 // Check if block is already there in Node
+                addBlock(*super_node, node_id, (char *)bid);
             }
         }
     }
@@ -538,7 +382,21 @@ void printNode(struct blockchain_Node *node, const bool print_blocks)
         
         if (print_blocks == true)
         {
-            my_str_write(1, ": BLOCKS_WILL_COME_HERE!");
+            struct blocks *curr_block = head->bidList->head;
+            while(curr_block != NULL)
+            {
+                if (curr_block == head->bidList->head)
+                {
+                    my_str_write(1, ": ");
+                }
+
+                my_str_write(1, curr_block->block_data);
+                
+                if (curr_block->next_block != NULL)
+                {
+                    my_str_write(1, ", ");
+                }
+            }
         }
 
         my_str_write(1, "\n");
@@ -558,58 +416,6 @@ void freeNodes(struct blockchain_Node *node)
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-struct blockchain_Node* createNode(int nid_numb)
-{
-    struct blockchain_Node *bc = (struct blockchain_Node *) malloc(sizeof(struct blockchain_Node));
-    bc->nid = nid_numb;
-    // bc->bid_size =BID_SIZE;
-    bc->next = NULL;
-
-    return bc;
-    free(bc);
-}
-
-void addNode(struct blockchain_Node *node, int nid_numb)
-{
-    //printf("Hello from addNode!\n");
-
-    struct blockchain_Node* current = node;
-
-    //get last node
-    while(current != NULL && current->next != NULL){
-        current = current->next;
-    }
-    //create node with given nid
-    struct blockchain_Node* new_Node = createNode(nid_numb);
-    if(current==NULL) 
-    {
-        current = new_Node;
-    } 
-    else 
-    {
-        current->next = new_Node;
-    }
-}
-
 struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb)
 {
     struct blockchain_Node* current = node; 
@@ -624,19 +430,6 @@ struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_
     return current; 
 }
 
-struct blockchain_Node* deleteNode(struct blockchain_Node *node, int nid_numb)
-{
-    struct blockchain_Node* current = node;
-    struct blockchain_Node* newq = NULL;
-    while(current) {
-        if (nid_numb != current->nid) {
-            addNode(newq, current->nid);
-        }
-    }
-    *node=*newq;
-    return newq;
-}
-
 int get_blockchain_size(struct blockchain_Node *node)
 {
     int count = 0;
@@ -647,53 +440,4 @@ int get_blockchain_size(struct blockchain_Node *node)
     }
     return count;
 }
-
-// struct Storage *createStorage(char *data)
-// {
-//     struct Storage* ret_storage = (struct Storage *) malloc (sizeof(struct Storage));
-//     for (int i = 0; i < READLINE_READ_SIZE; ++i)
-//     {
-//         ret_storage->buff[i] = data[i];
-//     }
-//     ret_storage->next = NULL;
-//     return ret_storage;
-// }
-
-// void addStorage(struct Storage *head, char *data)
-// {
-//     struct Storage *curr = head;
-//     while(curr->next != NULL)
-//     {   
-//         curr = curr->next;
-//     }
-//     curr->next = createStorage(data);
-// }
-
-// void freeStorage(struct Storage **storage)
-// {
-//     if (storage != NULL)
-//     {
-//         while(*storage != NULL)
-//         {
-//             struct Storage *tmp = *storage;
-//             *storage = (*storage)->next;
-//             free(tmp);
-//         }
-//     }
-//     free(storage);
-// }
-
-// bool isAllZeros(char *buff)
-// {
-//     for (int i = 0; i < READLINE_READ_SIZE; ++i)
-//     {
-//         if (buff[i] != 0)
-//         {
-//             return false;
-//         }
-//     }
-//     return true;
-// }
-
-
 
