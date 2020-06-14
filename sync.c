@@ -8,11 +8,6 @@ void sync_blockchain(struct blockchain_Node *node)
     struct blocks *current_head, *block_to_delete;
     char **array_of_blocks = collect_unique_blocks(current, &unique_block_numb);
     
-    for (int i = 0; i < unique_block_numb; ++i)
-    {
-        printf("%s\n", array_of_blocks[i]);
-    }
-
     while(current != NULL)
     {
         current_head = current->bidList->head;
