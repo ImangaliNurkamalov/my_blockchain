@@ -16,7 +16,7 @@ int main(int argc, const char* argv[])
     // READING BACKUP BLOCKCHAIN
 
     int i = 0;
-    while (i++ < 5)
+    while (i++ < 10)
     {
         const int blockchain_size = get_blockchain_size(*super_node);
         my_prompt_write(1, true, blockchain_size);

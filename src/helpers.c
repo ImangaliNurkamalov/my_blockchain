@@ -1,14 +1,12 @@
 #include "../include/helpers.h"
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 int my_str_len(const char *str)
 {
-    int count = 0;
-    while(*str++ != 0)
-    {
-        ++count;
-    }
+    int count;
+    for(count = 0; str[count] != 0; ++count);
     return count;
 }
 

@@ -6,6 +6,7 @@
 #define BLOCK_ADDED    1
 #define BLOCK_EXISTS   2
 #define NODE_NOT_EXIST 3
+#define NODE_DELETED   4
 
 struct blockList {
     struct blocks *head;
@@ -27,14 +28,16 @@ struct blockchain_Node {
 
 struct blockchain_Node* createNode(int nid_numb);
 void addNode(struct blockchain_Node *node, int nid);
-void deleteNode(struct blockchain_Node *node, int nid_numb);
+struct blockchain_Node *deleteNode(struct blockchain_Node *node, int nid_numb);
 void deleteAllNodes(struct blockchain_Node *fisrt_node);
+void printNode(struct blockchain_Node *node, const bool print_blocks);
 
 struct blocks* createBlock(char* data);
 int addBlock(struct blockchain_Node *node, int nid_numb, char* bid_string);
 void deleteBlock(struct blockchain_Node *node, char* bid_string);
+bool blockExists(struct blockchain_Node *node, char* bid_string);
 
 void freeBlockChainNode(struct blockchain_Node *node);
 
-char** collect_uniue_blocks(struct blockchain_Node *node, int *block_numb);
+char** collect_unique_blocks(struct blockchain_Node *node, int *block_numb);
 void sync_blockchain(struct blockchain_Node *node);

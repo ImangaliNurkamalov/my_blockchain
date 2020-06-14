@@ -47,5 +47,5 @@ char *my_str_from_str(const char *str, const int start_ind);
 
 struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb);
 int get_blockchain_size(struct blockchain_Node *node);
-void printNode(struct blockchain_Node *node, const bool print_blocks);
+
 void freeNodes(struct blockchain_Node *node);

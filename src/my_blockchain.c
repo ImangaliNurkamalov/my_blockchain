@@ -83,8 +83,7 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
             break;
 
         case SYNC_CMD:
-            printf("Syncing!\n");
-            // Call sync function
+            sync_blockchain(*super_node);
             break;
 
         case LS_CMD:
@@ -208,18 +207,29 @@ void my_handle_rm_node(const char *buff, struct blockchain_Node **super_node)
     }
     else if (node_id == -1)
     {
-        freeNodes(*super_node);
+        deleteAllNodes(*super_node);
         *super_node = NULL;
     }
     else
     {
-        // Remove node with node _id
+        // Check if node_id exists
+        struct blockchain_Node *node_exists = search_for_a_node(*super_node, node_id);
+        
+        if (node_exists != NULL)
+        {
+            // Remove node with node _id
+            *super_node = deleteNode(*super_node, node_id);
+        }
+        else
+        {
+            callErrorFour();
+        }
     }
 }
 
 void my_handle_rm_block(const char *buff, struct blockchain_Node **super_node)
 {
-    const char *bid = my_str_from_str(buff, 9);
+    char *bid = my_str_from_str(buff, 9);
     if (bid == NULL)
     {
         callErrorSix();
@@ -233,14 +243,17 @@ void my_handle_rm_block(const char *buff, struct blockchain_Node **super_node)
         {
             callErrorSix();
         }
-        else
+        else if (blockExists(*super_node, bid) == true)
         {
             // Remove bid from all nodes
+            deleteBlock(*super_node, bid);
         }
+        else
+        {
+            callErrorFive();
+        }
+        free(bid);
     }
-
-    // Temporary
-    free((char *)bid);
 }
 
 int my_read_from_console(const int fd, char *buff)
@@ -399,38 +412,7 @@ char *my_str_from_str(const char *str, const int start_ind)
 
 
 
-void printNode(struct blockchain_Node *node, const bool print_blocks)
-{
-    struct blockchain_Node *head = node;
-    while (head != NULL)
-    {
-        my_int_write(1, head->nid);
-        
-        if (print_blocks == true)
-        {
-            struct blocks *curr_block = head->bidList->head;
-            while(curr_block != NULL)
-            {
-                if (curr_block == head->bidList->head)
-                {
-                    my_str_write(1, ": ");
-                }
 
-                my_str_write(1, curr_block->block_data);
-                
-                if (curr_block->next_block != NULL)
-                {
-                    my_str_write(1, ", ");
-                }
-
-                curr_block = curr_block->next_block;
-            }
-        }
-
-        my_str_write(1, "\n");
-        head = head->next;
-    }
-}
 
 void freeNodes(struct blockchain_Node *node)
 {
