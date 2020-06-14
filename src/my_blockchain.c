@@ -426,28 +426,5 @@ void freeNodes(struct blockchain_Node *node)
     }
 }
 
-struct blockchain_Node* search_for_a_node(struct blockchain_Node *node, int nid_numb)
-{
-    struct blockchain_Node* current = node; 
-    while(current) 
-    {
-        if(nid_numb == current->nid) 
-        {
-            return current;
-        }
-        current = current->next;
-    }
-    return current; 
-}
 
-int get_blockchain_size(struct blockchain_Node *node)
-{
-    int count = 0;
-    while(node != NULL)
-    {
-        ++count;
-        node = node->next;
-    }
-    return count;
-}
 

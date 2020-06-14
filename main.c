@@ -19,7 +19,8 @@ int main(int argc, const char* argv[])
     while (i++ < 10)
     {
         const int blockchain_size = get_blockchain_size(*super_node);
-        my_prompt_write(1, true, blockchain_size);
+        const bool in_sync = is_in_sync(*super_node);
+        my_prompt_write(1, in_sync, blockchain_size);
         const int prompt_int = my_prompt_handle(0, super_node);
         if (prompt_int == BREAK_READING)
         {
