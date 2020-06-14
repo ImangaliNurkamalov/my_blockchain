@@ -9,6 +9,21 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+void my_blockchain(struct blockchain_Node **super_node)
+{
+    while (true)
+    {
+        const int blockchain_size = get_blockchain_size(*super_node);
+        const bool in_sync = is_in_sync(*super_node);
+        my_prompt_write(1, in_sync, blockchain_size);
+        const int prompt_int = my_prompt_handle(0, super_node);
+        if (prompt_int == BREAK_READING)
+        {
+            break;
+        }
+    }
+}
+
 int my_prompt_write(const int fd, const bool is_sync, const int node_size)
 {
     int sum_chars_printed = 0;
@@ -87,7 +102,7 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
             break;
 
         case LS_CMD:
-            printNode(*super_node, true);
+            printNode(*super_node, my_handle_print_block(buff, super_node));
             break;
 
         case QUIT_CMD:
@@ -104,6 +119,57 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
     }
 
     return CONTINUE_READING;
+}
+
+int my_blockchain_command(const char *buff)
+{
+    if (my_str_nn_compare(buff, "add node", 0, 8) == true)
+    {
+        return ADD_NODE_CMD;
+    }
+    else if (my_str_nn_compare(buff, "add block", 0, 9) == true)
+    {
+        return ADD_BLOCK_CMD;
+    }
+    else if (my_str_nn_compare(buff, "rm node", 0, 7) == true)
+    {
+        return RM_NODE_CMD;
+    }
+    else if (my_str_nn_compare(buff, "rm block", 0, 8) == true)
+    {
+        return RM_BLOCK_CMD;
+    }
+    else if (my_str_nn_compare(buff, "sync", 0, 4) == true)
+    {
+        return SYNC_CMD;
+    }
+    else if (my_str_nn_compare(buff, "ls", 0, 2) == true)
+    {
+        return LS_CMD;
+    }
+    else if (my_str_nn_compare(buff, "quit", 0, 4) == true)
+    {
+        return QUIT_CMD;
+    }
+    else
+    {
+        return UNKNOWN_CMD;
+    }
+}
+
+int my_read_from_console(const int fd, char *buff)
+{
+    for (int i = 0; i < MAX_READ_SIZE; ++i)
+    {
+        buff[i] = 0;
+    }
+    const int read_sz = read(fd, buff, MAX_READ_SIZE);
+    if (read_sz < 2)
+    {
+        callErrorSix();
+        return -1;
+    }
+    return 0;
 }
 
 void my_handle_add_node(const char *buff, struct blockchain_Node **super_node)
@@ -256,55 +322,13 @@ void my_handle_rm_block(const char *buff, struct blockchain_Node **super_node)
     }
 }
 
-int my_read_from_console(const int fd, char *buff)
+bool my_handle_print_block(const char *buff, struct blockchain_Node **super_node)
 {
-    for (int i = 0; i < MAX_READ_SIZE; ++i)
+    if (my_str_nn_compare(buff, "-l", 3, 2) == true)
     {
-        buff[i] = 0;
+        return true;
     }
-    const int read_sz = read(fd, buff, MAX_READ_SIZE);
-    if (read_sz < 2)
-    {
-        callErrorSix();
-        return -1;
-    }
-    return 0;
-}
-
-int my_blockchain_command(const char *buff)
-{
-    if (my_str_nn_compare(buff, "add node", 0, 8) == true)
-    {
-        return ADD_NODE_CMD;
-    }
-    else if (my_str_nn_compare(buff, "add block", 0, 9) == true)
-    {
-        return ADD_BLOCK_CMD;
-    }
-    else if (my_str_nn_compare(buff, "rm node", 0, 7) == true)
-    {
-        return RM_NODE_CMD;
-    }
-    else if (my_str_nn_compare(buff, "rm block", 0, 8) == true)
-    {
-        return RM_BLOCK_CMD;
-    }
-    else if (my_str_nn_compare(buff, "sync", 0, 4) == true)
-    {
-        return SYNC_CMD;
-    }
-    else if (my_str_nn_compare(buff, "ls", 0, 2) == true)
-    {
-        return LS_CMD;
-    }
-    else if (my_str_nn_compare(buff, "quit", 0, 4) == true)
-    {
-        return QUIT_CMD;
-    }
-    else
-    {
-        return UNKNOWN_CMD;
-    }
+     return false;
 }
 
 int my_str_to_int(const char *str, const int start_ind)
@@ -396,35 +420,3 @@ char *my_str_from_str(const char *str, const int start_ind)
         return str_ret;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void freeNodes(struct blockchain_Node *node)
-{
-    struct blockchain_Node *temp, *head = node;
-    while(head != NULL)
-    {
-        temp = head;
-        head = head->next;
-        temp->next = NULL;
-        free(temp);
-    }
-}
-
-
-

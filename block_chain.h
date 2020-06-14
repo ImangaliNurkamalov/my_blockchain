@@ -1,3 +1,6 @@
+#ifndef BLOCK_CHAIN_H
+#define BLOCK_CHAIN_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,3 +47,5 @@ void freeBlockChainNode(struct blockchain_Node *node);
 char** collect_unique_blocks(struct blockchain_Node *node, int *block_numb);
 void sync_blockchain(struct blockchain_Node *node);
 bool is_in_sync(struct blockchain_Node *node);
+
+#endif // BLOCK_CHAIN_H

@@ -118,3 +118,47 @@ char *my_str_copy(const char *str)
     ret_str[str_sz] = 0;
     return ret_str;
 }
+
+int my_str_to_int_v2(const char *str)
+{
+    // Modified version of my_str_to_int function in my_blockchain.h
+    const int start_ind = 0;
+    const int str_len = my_str_len(str);
+
+    if ((str_len - start_ind) == 1 && str[start_ind] == '*')
+    {
+        return -1;
+    }
+    else if (str_len <= start_ind)
+    {
+        return -2;
+    }
+    else
+    {
+        const int end_ind = str_len;
+
+        // Sanity check, the rest should be integer
+        for (int i = start_ind; i < end_ind; ++i)
+        {
+            if (str[i] < 48 || str[i] > 57)
+            {
+                return -2;
+            }
+        }
+
+        int ret_int = 0;
+        for (int i = start_ind; i < end_ind; ++i)
+        {
+            int len = end_ind - i;
+            int pow_10 = 1;
+            while (len > 1)
+            {
+                pow_10 *= 10;
+                --len;
+            }
+
+            ret_int += (str[i] - 48) * pow_10;
+        }
+        return ret_int;
+    }
+}
