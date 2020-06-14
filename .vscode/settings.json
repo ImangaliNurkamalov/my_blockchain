@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "my_blockchain.h": "c",
+        "stat.h": "c",
+        "block_chain.h": "c",
+        "unistd.h": "c",
+        "my_save.h": "c"
+    }
+}
