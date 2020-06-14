@@ -7,30 +7,28 @@ void sync_blockchain(struct blockchain_Node *node)
     struct blockchain_Node *current = node;
     struct blocks *current_head, *block_to_delete;
     char **array_of_blocks = collect_unique_blocks(current, &unique_block_numb);
-    
-    while(current != NULL)
+    while (current != NULL)
     {
         current_head = current->bidList->head;
-        if(current_head != NULL)
+        if (current_head != NULL)
         {
-            while(current_head != NULL)
+            while (current_head != NULL)
             {
                 block_to_delete = current_head;
                 current_head = current_head->next_block;
                 free(block_to_delete->block_data);
                 free(block_to_delete);
-            }     
+            }
             current->bidList->head = NULL;
             current->bid_array_size = 0;
-                
-            for(int i = 0; i < unique_block_numb; i++)
+            for (int i = 0; i < unique_block_numb; i++)
             {
                 addBlock(node, current->nid, my_str_copy(array_of_blocks[i]));
             }
-        } 
-        else 
+        }
+        else
         {
-            for(int i = 0; i < unique_block_numb; i++)
+            for (int i = 0; i < unique_block_numb; i++)
             {
                 addBlock(node, current->nid, my_str_copy(array_of_blocks[i]));
             }
@@ -45,35 +43,35 @@ void sync_blockchain(struct blockchain_Node *node)
     free(array_of_blocks);
 }
 
-char** collect_unique_blocks(struct blockchain_Node *node, int *block_numb)
+char **collect_unique_blocks(struct blockchain_Node *node, int *block_numb)
 {
     char **blocks = malloc(100 * sizeof(char *));
     int increment = 0;
     struct blockchain_Node *current = node;
-    struct blocks *current_head;  
+    struct blocks *current_head;
     bool unique = true;
-    while(current != NULL)
+    while (current != NULL)
     {
         current_head = current->bidList->head;
-        while(current_head != NULL)
+        while (current_head != NULL)
         {
-            if(increment == 0)
+            if (increment == 0)
             {
                 blocks[increment] = my_str_copy(current_head->block_data);
                 increment++;
-            } 
-            else 
-            {                
+            }
+            else
+            {
                 unique = true;
-                for(int i = 0; i < increment; i++)
+                for (int i = 0; i < increment; i++)
                 {
-                    if(my_str_compare(blocks[i], current_head->block_data) == true)
+                    if (my_str_compare(blocks[i], current_head->block_data) == true)
                     {
                         unique = false;
                     }
                 }
 
-                if(unique == true)
+                if (unique == true)
                 {
                     blocks[increment] = my_str_copy(current_head->block_data);
                     increment++;
@@ -122,11 +120,11 @@ bool is_in_sync(struct blockchain_Node *node)
     {
         current = node;
         bool block_found = false;
-        while(current != NULL)
+        while (current != NULL)
         {
             block_found = false;
             current_head = current->bidList->head;
-            while(current_head != NULL)
+            while (current_head != NULL)
             {
                 if (my_str_compare(array_of_blocks[i], current_head->block_data) == true)
                 {

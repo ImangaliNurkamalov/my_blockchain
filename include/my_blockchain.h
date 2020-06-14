@@ -13,17 +13,17 @@
 
 #define BID_SIZE 10
 
-#define BREAK_READING    1
+#define BREAK_READING 1
 #define CONTINUE_READING 2
 
-#define ADD_NODE_CMD  1
+#define ADD_NODE_CMD 1
 #define ADD_BLOCK_CMD 2
-#define RM_NODE_CMD   3
-#define RM_BLOCK_CMD  4
-#define LS_CMD        5
-#define SYNC_CMD      6
-#define QUIT_CMD      7
-#define UNKNOWN_CMD   8
+#define RM_NODE_CMD 3
+#define RM_BLOCK_CMD 4
+#define LS_CMD 5
+#define SYNC_CMD 6
+#define QUIT_CMD 7
+#define UNKNOWN_CMD 8
 
 #define MAX_READ_SIZE 512
 

@@ -16,7 +16,6 @@ void my_read_backup(struct blockchain_Node **super_node, const char *backup_path
         my_str_write(1, "No backup blockchain file name specified\n");
         return;
     }
-    
     const int fd = open(backup_path, O_RDONLY);
     if (fd < 0)
     {
@@ -30,8 +29,8 @@ void my_read_backup(struct blockchain_Node **super_node, const char *backup_path
     int latest_node_id = 0;
 
     char *str = NULL;
-    while ((str = myReadline(fd)) != NULL) 
-    {   
+    while ((str = myReadline(fd)) != NULL)
+    {
         if (my_str_compare(str, "node") == true)
         {
             is_next_node = true;
@@ -49,8 +48,7 @@ void my_read_backup(struct blockchain_Node **super_node, const char *backup_path
         else
         {
             // Do nothing
-        }        
-        
+        }
         if ((is_next_node == true) && (is_next_block == false))
         {
             const int node_id = my_str_to_int_v2(str);
@@ -58,7 +56,7 @@ void my_read_backup(struct blockchain_Node **super_node, const char *backup_path
 
             if (*super_node == NULL)
             {
-                *super_node = createNode(node_id);                
+                *super_node = createNode(node_id);
             }
             else
             {
@@ -74,7 +72,6 @@ void my_read_backup(struct blockchain_Node **super_node, const char *backup_path
         {
             // Do nothing
         }
-        
         free(str);
     }
     close(fd);

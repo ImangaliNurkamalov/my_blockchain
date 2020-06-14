@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-char* myReadline(int fd)
+char *myReadline(int fd)
 {
     // Do not continue for not successful file description
     if (fd < 0)
@@ -17,7 +17,7 @@ char* myReadline(int fd)
     // Initialize storage memory
     if (big_storage == NULL)
     {
-        big_storage = (struct Storage **) malloc (sizeof(struct Storage *));
+        big_storage = (struct Storage **)malloc(sizeof(struct Storage *));
         *big_storage = NULL;
 
         // Read all contents of the file and store
@@ -85,7 +85,7 @@ char* myReadline(int fd)
                 else
                 {
                     is_non_zero = true;
-                    ++capacity;   
+                    ++capacity;
                 }
             }
 
@@ -96,7 +96,7 @@ char* myReadline(int fd)
             else
             {
                 tmp_head = tmp_head->next;
-            }            
+            }
         }
     }
 
@@ -106,8 +106,8 @@ char* myReadline(int fd)
         return NULL;
     }
 
-    // Populate return string based on capacity defined and set old elements to zeros 
-    char *ret_str = (char *) malloc ((capacity + 1) * sizeof(char));
+    // Populate return string based on capacity defined and set old elements to zeros
+    char *ret_str = (char *)malloc((capacity + 1) * sizeof(char));
     is_non_zero = false;
     is_terminated = false;
     is_new_line = false;
@@ -117,7 +117,7 @@ char* myReadline(int fd)
     {
         if (isAllZeros(tmp_head->buff) == true)
         {
-            tmp_head = tmp_head->next;           
+            tmp_head = tmp_head->next;
         }
         else
         {
@@ -170,7 +170,7 @@ char* myReadline(int fd)
 
 struct Storage *createStorage(char *data)
 {
-    struct Storage* ret_storage = (struct Storage *) malloc (sizeof(struct Storage));
+    struct Storage *ret_storage = (struct Storage *)malloc(sizeof(struct Storage));
     for (int i = 0; i < READLINE_READ_SIZE; ++i)
     {
         ret_storage->buff[i] = data[i];
@@ -182,8 +182,8 @@ struct Storage *createStorage(char *data)
 void addStorage(struct Storage *head, char *data)
 {
     struct Storage *curr = head;
-    while(curr->next != NULL)
-    {   
+    while (curr->next != NULL)
+    {
         curr = curr->next;
     }
     curr->next = createStorage(data);
@@ -193,7 +193,7 @@ void freeStorage(struct Storage **storage)
 {
     if (storage != NULL)
     {
-        while(*storage != NULL)
+        while (*storage != NULL)
         {
             struct Storage *tmp = *storage;
             *storage = (*storage)->next;

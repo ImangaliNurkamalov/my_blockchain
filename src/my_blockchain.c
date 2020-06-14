@@ -36,7 +36,6 @@ int my_prompt_write(const int fd, const bool is_sync, const int node_size)
     {
         sum_chars_printed += chars_printed;
     }
-    
     chars_printed = (is_sync == true) ? my_str_write(1, "s") : my_str_write(1, "-");
     if (chars_printed < 0)
     {
@@ -46,17 +45,15 @@ int my_prompt_write(const int fd, const bool is_sync, const int node_size)
     {
         sum_chars_printed += chars_printed;
     }
-    
     chars_printed = my_int_write(1, node_size);
     if (chars_printed < 0)
-    {   
+    {
         return -1;
     }
     else
     {
         sum_chars_printed += chars_printed;
     }
-    
     chars_printed = my_str_write(1, "]> ");
     if (chars_printed < 0)
     {
@@ -84,35 +81,27 @@ int my_prompt_handle(const int fd, struct blockchain_Node **super_node)
         case ADD_NODE_CMD:
             my_handle_add_node(buff, super_node);
             break;
-
         case ADD_BLOCK_CMD:
             my_handle_add_block(buff, super_node);
             break;
-        
         case RM_NODE_CMD:
             my_handle_rm_node(buff, super_node);
             break;
-
         case RM_BLOCK_CMD:
             my_handle_rm_block(buff, super_node);
             break;
-
         case SYNC_CMD:
             sync_blockchain(*super_node);
             break;
-
         case LS_CMD:
             printNode(*super_node, my_handle_print_block(buff, super_node));
             break;
-
         case QUIT_CMD:
             return BREAK_READING;
             break;
-        
         case UNKNOWN_CMD:
             callErrorSix();
             break;
-
         default:
             callErrorSix();
             break;
@@ -280,7 +269,6 @@ void my_handle_rm_node(const char *buff, struct blockchain_Node **super_node)
     {
         // Check if node_id exists
         struct blockchain_Node *node_exists = search_for_a_node(*super_node, node_id);
-        
         if (node_exists != NULL)
         {
             // Remove node with node _id
@@ -328,7 +316,7 @@ bool my_handle_print_block(const char *buff, struct blockchain_Node **super_node
     {
         return true;
     }
-     return false;
+    return false;
 }
 
 int my_str_to_int(const char *str, const int start_ind)
@@ -381,7 +369,6 @@ char *my_str_from_str(const char *str, const int start_ind)
 
     char *str_ret = NULL;
     int str_ret_len = 0;
-    
     if (str_len < start_ind)
     {
         return str_ret;
@@ -402,16 +389,14 @@ char *my_str_from_str(const char *str, const int start_ind)
                 break;
             }
         }
-        
         if (str_ret_len == 0)
         {
             return str_ret;
         }
         else
         {
-            str_ret = (char *) malloc ((str_ret_len + 1) * sizeof(char));
-        }        
-        
+            str_ret = (char *)malloc((str_ret_len + 1) * sizeof(char));
+        }
         for (int i = start_ind; i < str_ret_len + start_ind; ++i)
         {
             str_ret[i - start_ind] = str[i];

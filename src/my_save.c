@@ -13,9 +13,7 @@ void my_save(struct blockchain_Node *super_node, const char *save_path)
         my_str_write(1, "No save blockchain file name specified\n");
         return;
     }
-   
     const int fd = open(save_path, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IWUSR);
-    
     struct blockchain_Node *current = super_node;
     struct blocks *current_block;
     while (current != NULL)

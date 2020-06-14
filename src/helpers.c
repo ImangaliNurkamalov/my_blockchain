@@ -6,7 +6,10 @@
 int my_str_len(const char *str)
 {
     int count;
-    for(count = 0; str[count] != 0; ++count);
+    for (count = 0; str[count] != 0; ++count)
+    {
+        // Do nothing
+    }
     return count;
 }
 
@@ -47,7 +50,7 @@ int my_int_write(const int fd, const int input)
                 power_10 *= 10;
             }
 
-            print_digit = ( input / power_10 ) % 10 + 48;
+            print_digit = (input / power_10) % 10 + 48;
             count_chars_printed += write(fd, &print_digit, 1);
             --len;
         }
@@ -110,7 +113,7 @@ bool my_str_nn_compare(const char *left, const char *right, const int start_ind,
 char *my_str_copy(const char *str)
 {
     const int str_sz = my_str_len(str);
-    char *ret_str = (char *) malloc ((str_sz + 1) * sizeof(char));
+    char *ret_str = (char *)malloc((str_sz + 1) * sizeof(char));
     for (int i = 0; i < str_sz; ++i)
     {
         ret_str[i] = str[i];
