@@ -17,9 +17,9 @@ For blockchain key commands see below:
 - **quit** save and leave the blockchain
 
 The blockchain prompt displays (see example below):
-....dsds
-....dsdsd
-....dsds
+⋅⋅⋅dsds
+⋅⋅⋅dsdsd
+⋅⋅⋅dsds
 
 <ul>dsds
    dsds</ul>
