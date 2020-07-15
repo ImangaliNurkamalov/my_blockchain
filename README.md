@@ -21,6 +21,9 @@ The blockchain prompt displays (see example below):
 ....dsdsd
 ....dsds
 
+<pre>dsds</pre>
+<pre>dsds</pre>
+
    a [ character
    a first letter that indicates the state of synchronization of the chain:
    "**s**" if the blockchain is synchronized
