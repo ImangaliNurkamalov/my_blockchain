@@ -26,7 +26,7 @@ The blockchain prompt displays (see example below):
 
 ⋅⋅⋅dsds
 
-<ul>dsds
+<ul>dsds \
    dsds</ul>
 <ul>dsds</ul>
 
