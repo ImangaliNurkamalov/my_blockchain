@@ -18,9 +18,9 @@ For blockchain key commands see below:
 
 The blockchain prompt displays (see example below):
 
-⋅⋅⋅dsds
+   dsds  
 
-⋅⋅⋅dsdsd
+   dsdsd 
 
 ⋅⋅⋅dsds
 
