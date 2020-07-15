@@ -17,19 +17,12 @@ For blockchain key commands see below:
 - **quit** save and leave the blockchain
 
 The blockchain prompt displays (see example below):\
-    a [ charachter\
-    a first letter that indicates the state of synchronization of the chain:\
+        a [ charachter\
+        a first letter that indicates the state of synchronization of the chain:\
     "**s**" if the blockchain is synchronized\
     "**-**" if the blockchain is not synchronized.\
     **n** number of nodes in the chain.\
-    the "**]>** " string (with a space)\
-
-   a [ character
-   a first letter that indicates the state of synchronization of the chain:
-   "**s**" if the blockchain is synchronized
-   "**-**" if the blockchain is not synchronized.
-   **n** number of nodes in the chain.
-   the "**]>** " string (with a space)
+    the "**]>** " string (with a space)
    
 ## Run
 ```
