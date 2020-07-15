@@ -1,7 +1,28 @@
 # my_blockchain
 
-## Hello reveiwer
-Welcome to blockchain!
+## Command
+`my_blockchain`
+
+## Description
+Blockchain is a command to create and manage a blockchain. When the program starts it loads a backup blockchain if there is any; then, a prompt appears.
+The prompt allows to execute blockchain commands. When the commands are successful it will process as normally, otherwise, i.e. if error appears, it displays "error:INFO" as shown in **Error Messages** field.
+
+For blockchain key commands see below:
+- **add node _node_id_** add a _node_id_ "Node Identifier" to the blockchain node
+- **rm node _node_id_** removes node from the blockchain with _node_id_ "Node Identifier". If _node_id_ is '*', then all nodes are removed
+- **add block _block_id_ _node_id_** add a _block_id_ "Block Identifier" to blockchain node with _node_id_ "Node Identifier". If _node_id_ is '*', then _block_id_ is added to all blockchain nodes
+- **rm block _lock_id_** removes _block_id_ "Block Identifier" from all nodes where these blocks are present
+- **ls** list all nodes by their identifiers. If an option **-l** is attached, then additionally block identifiers associated to the node are listed
+- **sync** synchronizes all of the nodes with each other. Upon issuing this command, all of the nodes are composed of the same blocks
+- **quit** save and leave the blockchain
+
+The blockchain prompt displays (see example below):
+   a [ character
+   a first letter that indicates the state of synchronization of the chain:
+   "**s**" if the blockchain is synchronized
+   "**-**" if the blockchain is not synchronized.
+   **n** number of nodes in the chain.
+   the "**]>** " string (with a space)
 
 ## Run
 ```
