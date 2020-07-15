@@ -23,7 +23,7 @@ The blockchain prompt displays (see example below):
    "**-**" if the blockchain is not synchronized.
    **n** number of nodes in the chain.
    the "**]>** " string (with a space)
-
+   
 ## Run
 ```
 make
