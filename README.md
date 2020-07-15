@@ -17,18 +17,8 @@ For blockchain key commands see below:
 - **quit** save and leave the blockchain
 
 The blockchain prompt displays (see example below):
-  <dd>Is something people use sometimes.</dd>
-  <dd>Is something people use sometimes.</dd>
-
-   dsds  
-
-   dsdsd 
-
-⋅⋅⋅dsds
-
-<ul>dsds /
-   dsds</ul>
-<ul>dsds</ul>
+a [ charachter\
+a fi
 
    a [ character
    a first letter that indicates the state of synchronization of the chain:
