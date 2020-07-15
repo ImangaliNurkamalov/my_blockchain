@@ -50,9 +50,12 @@ $>my_blockhain
 [-0]> add node 12
 [-1]> add block 21 *
 [-1]> add node 13
+[-2]> ls -l
+12: 21
+13:
 [-2]> sync
 [s2]> ls -l
 12: 21
-13:
+13: 21
 [s2]> quit
 ```
