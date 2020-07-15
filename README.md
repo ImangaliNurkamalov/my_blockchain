@@ -22,8 +22,8 @@ a **[** charachter\
 a first letter that indicates the state of synchronization of the chain:\
 - "**s**" if the blockchain is synchronized\
 - "**-**" if the blockchain is not synchronized.\
-    **n** number of nodes in the chain.\
-    the "**]>** " string (with a space)
+**n** number of nodes in the chain.\
+the "**]>** " string (with a space)
 
 ## Run
 ```
