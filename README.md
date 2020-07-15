@@ -28,11 +28,10 @@ the "**]>** " string (with a space)
 ## Error messages
 1. "No more resources available on the computer"
 2. "This node already exists"
-
-3: "This block already exists"
-4: "Node does not exist"
-5: "Block does not exist"
-6: "Command not found"
+3. "This block already exists"
+4. "Node does not exist"
+5. "Block does not exist"
+6. "Command not found"
 
 ## Run
 ```
