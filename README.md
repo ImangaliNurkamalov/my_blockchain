@@ -43,3 +43,16 @@ For example:
 ./my_blockchain backup.txt // Blockchain will first read from backup and will not save
 ./my_blockchain backup.txt save.txt // Blockchain will first read from backup and finally save the blockchain to save.txt (If backup.txt does not exist, the blockchain will still work and save the blockchain to save.txt)
 ```
+
+## Technical Information
+```
+$>my_blockhain
+[-0]> add node 12
+[-1]> add block 21 *
+[-1]> add node 13
+[-2]> sync
+[s2]> ls -l
+12: 21
+13:
+[s2]> quit
+```
