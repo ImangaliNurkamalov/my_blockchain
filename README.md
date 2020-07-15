@@ -21,7 +21,8 @@ The blockchain prompt displays (see example below):
 ....dsdsd
 ....dsds
 
-<ul>dsdsdsds</ul>
+<ul>dsds
+   dsds</ul>
 <ul>dsds</ul>
 
    a [ character
